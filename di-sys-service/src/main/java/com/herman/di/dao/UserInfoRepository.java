@@ -14,8 +14,8 @@ import org.springframework.data.jpa.repository.Query;
 public interface UserInfoRepository extends JpaRepository<UserInfo, Integer>, JpaSpecificationExecutor<UserInfo> {
 
 
-    //    @Query("select  u  from  UserInfo u where u.id=?1 ")
-    //@Query("select  * from user_info  where id=:id",nativeQuery = true)//本地模式查询即原生sql  /*@Param("id")*/
+//        @Query("select  u  from  UserInfo u where u.id=?1 ")
+    @Query(value="select  * from user_info  where id=:id",nativeQuery = true)//本地模式查询即原生sql  /*@Param("id")*/
     UserInfo findById(Integer id);
 
 
