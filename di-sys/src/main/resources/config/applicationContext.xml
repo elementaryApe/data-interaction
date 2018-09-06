@@ -2,14 +2,17 @@
 <beans xmlns="http://www.springframework.org/schema/beans" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
        xmlns:context="http://www.springframework.org/schema/context"
        xmlns:aop="http://www.springframework.org/schema/aop" xmlns:tx="http://www.springframework.org/schema/tx"
-       xmlns:p="http://www.springframework.org/schema/p"
-       xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-4.0.xsd http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context-4.0.xsd http://www.springframework.org/schema/aop http://www.springframework.org/schema/aop/spring-aop-4.0.xsd http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx-4.0.xsd">
+       xmlns:jpa="http://www.springframework.org/schema/data/jpa"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-4.0.xsd http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context-4.0.xsd http://www.springframework.org/schema/aop http://www.springframework.org/schema/aop/spring-aop-4.0.xsd http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx-4.0.xsd http://www.springframework.org/schema/data/jpa http://www.springframework.org/schema/data/jpa/spring-jpa.xsd">
 
     <!-- jdbc配置 -->
-    <context:property-placeholder location="classpath:config/jdbc.properties" />
+    <context:property-placeholder location="classpath:config/jdbc.properties"/>
 
     <!-- 自动将Service层注入-->
     <context:component-scan base-package="com.herman.di.service"/>
+
+    <!-- 使用cglib进行动态代理 -->
+    <aop:aspectj-autoproxy proxy-target-class="true"/>
     <!-- dbcp数据源 -->
     <bean id="dataSource" class="com.alibaba.druid.pool.DruidDataSource" init-method="init" destroy-method="close">
         <!--这里如果写成${jdbc.driver}，就会出现加载jdbc驱动失败的问题，暂时不清楚什么原因-->
@@ -20,16 +23,55 @@
         <property name="maxActive" value="${jdbc.maxActive}"/> <!-- 初始化连接大小 -->
         <property name="initialSize" value="${jdbc.initialSize}"/> <!-- 获取连接最大等待时间 -->
         <property name="maxWait" value="${jdbc.maxWait}"/> <!-- 连接池最大空闲 -->
-        <property name="maxPoolPreparedStatementPerConnectionSize" value="${jdbc.maxPoolPreparedStatementPerConnectionSize}"/> <!-- 连接池最小空闲 -->
+        <property name="maxPoolPreparedStatementPerConnectionSize"
+                  value="${jdbc.maxPoolPreparedStatementPerConnectionSize}"/> <!-- 连接池最小空闲 -->
         <property name="minIdle" value="${jdbc.minIdle}"/> <!-- 自动清除无用连接 -->
         <property name="removeAbandoned" value="${jdbc.removeAbandoned}"/> <!-- 清除无用连接的等待时间 -->
         <property name="removeAbandonedTimeout" value="${jdbc.removeAbandonedTimeout}"/> <!-- 连接属性 -->
         <property name="connectionProperties" value="clientEncoding=UTF-8"/>
     </bean>
 
-    <bean id="transactionManager" class="org.springframework.jdbc.datasource.DataSourceTransactionManager">
+    <!-- spring整合JPA -->
+    <bean id="entityManagerFactory"
+          class="org.springframework.orm.jpa.LocalContainerEntityManagerFactoryBean">
         <property name="dataSource" ref="dataSource"/>
+        <!--指定JPA扫描的实体类所在的包-->
+        <property name="packagesToScan" value="com.herman.di.entity"/>
+        <!-- 指定持久层提供者为Hibernate -->
+        <property name="persistenceProvider">
+            <bean class="org.hibernate.ejb.HibernatePersistence"/>
+        </property>
+        <property name="jpaVendorAdapter">
+            <bean class="org.springframework.orm.jpa.vendor.HibernateJpaVendorAdapter">
+                <!-- 自动建表 -->
+                <property name="generateDdl" value="true"/>
+                <property name="database" value="MYSQL"/>
+                <property name="databasePlatform" value="org.hibernate.dialect.MySQL5InnoDBDialect"/>
+                <property name="showSql" value="true"/>
+            </bean>
+        </property>
+        <property name="jpaDialect">
+            <bean class="org.springframework.orm.jpa.vendor.HibernateJpaDialect"/>
+        </property>
+        <property name="jpaPropertyMap">
+            <map>
+                <entry key="hibernate.query.substitutions" value="true 1, false 0"/>
+                <entry key="hibernate.default_batch_fetch_size" value="16"/>
+                <entry key="hibernate.max_fetch_depth" value="2"/>
+                <entry key="hibernate.generate_statistics" value="true"/>
+                <entry key="hibernate.bytecode.use_reflection_optimizer" value="true"/>
+                <entry key="hibernate.cache.use_second_level_cache" value="false"/>
+                <entry key="hibernate.cache.use_query_cache" value="false"/>
+            </map>
+        </property>
     </bean>
+
+    <bean id="transactionManager" class="org.springframework.orm.jpa.JpaTransactionManager">
+        <property name="entityManagerFactory" ref="entityManagerFactory"/>
+    </bean>
+    <!--指定Spring Data JPA要进行扫描的包,该包中的类框架会自动为其创建代理-->
+    <jpa:repositories base-package="com.herman.di.dao" repository-impl-postfix="Impl"
+                      entity-manager-factory-ref="entityManagerFactory" transaction-manager-ref="transactionManager"/>
 
     <tx:advice id="txAdvice" transaction-manager="transactionManager">
         <tx:attributes>

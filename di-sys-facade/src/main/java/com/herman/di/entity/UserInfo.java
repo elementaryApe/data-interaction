@@ -1,50 +1,59 @@
 package com.herman.di.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import lombok.Data;
+
+import javax.persistence.*;
 import java.io.Serializable;
+import java.util.List;
 
 /**
+ * 用户实体
+ *
  * @author hsh
- * @create 2018-08-29 15:50
+ * @create 2018-08-30 11:49
  **/
+@Data
+@Entity
+@Table(name = "user_info")
+@JsonIgnoreProperties(value = {"hibernateLazyInitializer", "handler", "fieldHandler"})
 public class UserInfo implements Serializable {
-    private static final long serialVersionUID = 7853614042359801227L;
+    private static final long serialVersionUID = -12285021873923699L;
+    @Id
+    @Column(name = "id")
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Integer id;
 
-    /**
-     * 用户Id
-     */
-    private String userId;
+    @Column(name = "uname")
+    private String uName;
 
-    /**
-     * 用户名称
-     */
-    private String userName;
+    @Column(name = "unumber")
+    private String uNumber;
 
-    /**
-     * 用户密码
-     */
+    @Column(name = "password")
     private String password;
 
-    public String getUserName() {
-        return userName;
+    @JsonIgnoreProperties(value = "userInfo")//避免递归死循环
+    @OneToOne(mappedBy = "userInfo", cascade = CascadeType.ALL)
+    private UserDetails userDetails;
+
+    @JsonIgnoreProperties(value = "userInfo")//避免递归死循环
+    @OneToMany(mappedBy = "userInfo", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    private List<ArticleInfo> articleInfoList;
+
+    @JsonIgnoreProperties(value = "userInfoList")//避免递归死循环
+    @ManyToMany
+    @JoinTable(name = "user_info_role",
+            joinColumns = {@JoinColumn(name = "user_info_id", referencedColumnName = "id")},
+            inverseJoinColumns = {@JoinColumn(name = "role_id", referencedColumnName = "id")})
+    private List<Role> roleList;
+
+
+    public UserInfo() {
     }
 
-    public void setUserName(String userName) {
-        this.userName = userName;
+    public UserInfo(Integer id) {
+        this.id = id;
     }
 
-    public String getPassword() {
-        return password;
-    }
-
-    public void setPassword(String password) {
-        this.password = password;
-    }
-
-    public String getUserId() {
-        return userId;
-    }
-
-    public void setUserId(String userId) {
-        this.userId = userId;
-    }
 }
