@@ -1,7 +1,5 @@
 package com.herman.di.entity;
 
-import lombok.Data;
-
 /**
  * 返回体封装
  *
@@ -18,7 +16,7 @@ public class Result<T> {
     private T result;
 
 
-    public  Result(Integer status, String message, T result) {
+    public Result(Integer status, String message, T result) {
         this.status = status;
         this.message = message;
         this.result = result;
@@ -33,7 +31,7 @@ public class Result<T> {
         return new Result(ERROR, message, null);
     }
 
-    public static Result resultSucess(){
+    public static Result resultSucess() {
         return new Result();
     }
 
