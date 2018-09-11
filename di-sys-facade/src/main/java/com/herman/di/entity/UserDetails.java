@@ -34,5 +34,7 @@ public class UserDetails implements Serializable {
     @JoinColumn(name = "user_id", referencedColumnName = "id")
     private UserInfo userInfo;
 
+
+
 }
 

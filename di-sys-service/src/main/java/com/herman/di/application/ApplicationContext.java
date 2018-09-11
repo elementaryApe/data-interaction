@@ -29,7 +29,7 @@ public class ApplicationContext {
 
     public void start() throws InterruptedException {
         if (classPathXmlApplicationContext == null) {
-            classPathXmlApplicationContext = new ClassPathXmlApplicationContext("classpath:config/dubbo_provider.xml");
+            classPathXmlApplicationContext = new ClassPathXmlApplicationContext("classpath:config/applicationContext.xml");
             classPathXmlApplicationContext.start();
         }
         System.out.println(MessageFormat.format("[STARTED]{0}", this.getClass().getSimpleName()));

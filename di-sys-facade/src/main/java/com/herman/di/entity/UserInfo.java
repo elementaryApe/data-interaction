@@ -33,20 +33,9 @@ public class UserInfo implements Serializable {
     @Column(name = "password")
     private String password;
 
-    @JsonIgnoreProperties(value = "userInfo")//避免递归死循环
-    @OneToOne(mappedBy = "userInfo", cascade = CascadeType.ALL)
-    private UserDetails userDetails;
-
-    @JsonIgnoreProperties(value = "userInfo")//避免递归死循环
-    @OneToMany(mappedBy = "userInfo", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
-    private List<ArticleInfo> articleInfoList;
-
-    @JsonIgnoreProperties(value = "userInfoList")//避免递归死循环
-    @ManyToMany
-    @JoinTable(name = "user_info_role",
-            joinColumns = {@JoinColumn(name = "user_info_id", referencedColumnName = "id")},
-            inverseJoinColumns = {@JoinColumn(name = "role_id", referencedColumnName = "id")})
-    private List<Role> roleList;
+//    @JsonIgnoreProperties(value = "userInfo")//避免递归死循环
+//    @OneToOne(mappedBy = "userInfo", cascade = CascadeType.ALL)
+//    private UserDetails userDetails;
 
 
     public UserInfo() {

@@ -10,29 +10,26 @@
 	http://www.springframework.org/schema/util http://www.springframework.org/schema/util/spring-util-3.0.xsd">
 
 
-    <!--加载配置文件-->
-    <bean id="propertyPlaceholderConfigurer" class="org.springframework.beans.factory.config.PropertyPlaceholderConfigurer">
-        <property name="locations">
-            <list>
-                <value>classpath:config/jdbc.properties</value>
-                <value>classpath:config/rpc_dubbo_provider.properties</value>
-            </list>
-        </property>
-    </bean>
+    <!--&lt;!&ndash;加载配置文件&ndash;&gt;-->
+    <!--<bean id="propertyPlaceholderConfigurer" class="org.springframework.beans.factory.config.PropertyPlaceholderConfigurer">-->
+        <!--<property name="locations">-->
+            <!--<list>-->
+                <!--<value>classpath:config/rpc_dubbo_provider.properties</value>-->
+            <!--</list>-->
+        <!--</property>-->
+    <!--</bean>-->
 
-    <dubbo:application name="${dubbox.application}" owner="programmer" organization="dubbox"/>
+    <dubbo:application name="${dubbox.application}" owner="hsh" organization="dubbox"/>
 
     <!-- zookeeper注册中心 -->
     <dubbo:registry address="${dubbox.registry.address}"/>
 
     <dubbo:annotation package="com.herman.di" />
 
-    <!-- 和本地bean一样实现服务 -->
-    <bean id="userInfoService" class="com.herman.di.service.impl.UserInfoServiceImpl" />
+    <!-- kryo实现序列化  用dubbo协议在20880端口暴露服务-->
+    <dubbo:protocol name="dubbo" serialization="kryo" optimizer="com.herman.di.serial.SerializationOptimizerImpl"  port="${dubbox.protocol.port}"/>
 
-    <!-- 声明需要暴露的服务接口 -->
-    <dubbo:service interface="com.herman.di.service.UserInfoService" ref="userInfoService" />
-
-    <import resource="classpath:config/applicationContext.xml"/>
+    <!-- rest -->
+    <dubbo:protocol name="rest" server="${dubbox.rest.server}" port="${dubbox.rest.port}" contextpath="${dubbox.rest.contextpath}" threads="${dubbox.rest.threads}" accepts="${dubbox.rest.accepts}" />
 
 </beans>

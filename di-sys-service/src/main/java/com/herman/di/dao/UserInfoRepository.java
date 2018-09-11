@@ -15,7 +15,7 @@ public interface UserInfoRepository extends JpaRepository<UserInfo, Integer>, Jp
 
 
 //        @Query("select  u  from  UserInfo u where u.id=?1 ")
-    @Query(value="select  * from user_info  where id=:id",nativeQuery = true)//本地模式查询即原生sql  /*@Param("id")*/
+//    @Query(value="select  * from user_info  where id=:id",nativeQuery = true)//本地模式查询即原生sql  /*@Param("id")*/
     UserInfo findById(Integer id);
 
 
