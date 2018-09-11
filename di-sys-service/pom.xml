@@ -25,7 +25,7 @@
             <version>1.0-SNAPSHOT</version>
         </dependency>
 
-        <!-- 如果要使用tomcat server -->
+        <!--如果要使用tomcat server -->
         <dependency>
             <groupId>org.apache.tomcat.embed</groupId>
             <artifactId>tomcat-embed-core</artifactId>
@@ -69,7 +69,7 @@
                     <classesDirectory>target/classes/</classesDirectory>
                     <archive>
                         <manifest>
-                            <mainClass>com.alibaba.dubbo.container.Main</mainClass>
+                            <mainClass>com.herman.di.application.ApplicationContext</mainClass>
                             <!-- 打包时 MANIFEST.MF文件不记录的时间戳版本 -->
                             <useUniqueVersions>false</useUniqueVersions>
                             <addClasspath>true</addClasspath>

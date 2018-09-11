@@ -14,8 +14,7 @@
             </list>
         </property>
     </bean>
-    <!-- 自动将Service层注入-->
-    <context:component-scan base-package="com.herman.di.service"/>
+
 
     <!-- 使用cglib进行动态代理 -->
     <aop:aspectj-autoproxy proxy-target-class="true"/>
@@ -78,6 +77,8 @@
     <!--指定Spring Data JPA要进行扫描的包,该包中的类框架会自动为其创建代理-->
     <jpa:repositories base-package="com.herman.di.dao" repository-impl-postfix="Impl"
                       entity-manager-factory-ref="entityManagerFactory" transaction-manager-ref="transactionManager"/>
+    <!-- 注解解析 -->
+    <context:annotation-config />
 
     <tx:advice id="txAdvice" transaction-manager="transactionManager">
         <tx:attributes>

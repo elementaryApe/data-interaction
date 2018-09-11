@@ -27,7 +27,7 @@
     <dubbo:annotation package="com.herman.di" />
 
     <!-- kryo实现序列化  用dubbo协议在20880端口暴露服务-->
-    <dubbo:protocol name="dubbo" serialization="kryo" optimizer="com.herman.di.serial.SerializationOptimizerImpl"  port="${dubbox.protocol.port}"/>
+    <dubbo:protocol name="dubbo" serialization="kryo" optimizer="com.herman.di.serial.SerializationOptimizerImpl" />
 
     <!-- rest -->
     <dubbo:protocol name="rest" server="${dubbox.rest.server}" port="${dubbox.rest.port}" contextpath="${dubbox.rest.contextpath}" threads="${dubbox.rest.threads}" accepts="${dubbox.rest.accepts}" />
