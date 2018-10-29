@@ -29,6 +29,7 @@
     <dubbo:protocol name="dubbo" serialization="kryo" optimizer="com.herman.di.serial.SerializationOptimizerImpl" />
 
     <!-- 生成远程服务代理，可以和本地bean一样使用demoService -->
-    <dubbo:reference id="userInfoService" interface="com.herman.di.service.UserInfoService"  version="1.0" />
+    <dubbo:reference id="userInfoService" interface="com.herman.di.service.UserInfoService"  version="1.0"  timeout="50000"/>
+    <dubbo:reference id="housingService" interface="com.herman.di.service.HousingService"  version="1.0"  timeout="600000"/>
 
 </beans>
